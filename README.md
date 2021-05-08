@@ -1,6 +1,6 @@
 # qt-widgets
 
-Reusable library of Qt Widgets.
+Reusable Qt widgets library.
 
 ## Flow Widget
 
