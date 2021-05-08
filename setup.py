@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='qt-widgets',
-    version='0.0.1-dev1',
+    version='0.0.1-dev2',
     author='flegac',
     description='Qt widgets library',
 

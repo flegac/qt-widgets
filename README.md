@@ -2,7 +2,7 @@
 
 Reusable library of Qt Widgets.
 
-# Flow Widget
+## Flow Widget
 
 Automatic layout for similar objects.
 
@@ -25,3 +25,22 @@ flow = FlowWidget(
     model=model,
 )
 ```
+
+# Install
+
+```
+pip install qt-widgets
+```
+
+## Requirements
+
+PyQt5
+
+```
+pip install pyqt5
+pip install pyqt5-tools
+```
+
+## Usage
+
+Run any script from the [test folder](tests).

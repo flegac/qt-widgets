@@ -5,5 +5,8 @@ install:
 build:
 	python -m build
 
-deploy:
+deploy-test:
 	twine upload --repository testpypi dist/*
+
+deploy-pypi:
+	twine upload --repository pypi dist/*
