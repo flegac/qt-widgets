@@ -37,15 +37,38 @@
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
-     <widget class="QWidget" name="pageWidget">
+     <widget class="QWidget" name="scrollAreaWidgetContents">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
         <width>1049</width>
-        <height>734</height>
+        <height>733</height>
        </rect>
       </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QStackedWidget" name="stackedWidget">
+         <widget class="QWidget" name="pageWidget"/>
+         <widget class="QWidget" name="hiddenWidget"/>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>
@@ -55,17 +78,24 @@
       <number>10</number>
      </property>
      <property name="leftMargin">
-      <number>5</number>
+      <number>0</number>
      </property>
      <property name="topMargin">
       <number>0</number>
      </property>
      <property name="rightMargin">
-      <number>5</number>
+      <number>0</number>
      </property>
      <property name="bottomMargin">
       <number>0</number>
      </property>
+     <item>
+      <widget class="QPushButton" name="nextStackButton">
+       <property name="text">
+        <string>Cycle visible stack</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QLabel" name="pageLabel">
        <property name="text">

@@ -45,7 +45,6 @@ class ConsoleWidget(QWidget):
     def _setup_ui(self):
         load_ui('console', self)
         self._text_box.contextMenuEvent = self.contextMenuEvent
-        self.show()
 
     def contextMenuEvent(self, event: QContextMenuEvent):
         menu = QMenu()
