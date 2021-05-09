@@ -31,6 +31,13 @@ class FlowWidget(QWidget, Generic[T]):
         self.widgets = dict()
         self._setup_ui()
 
+    def is_empty(self):
+        return len(self.model) == 0
+
+    def add_item(self, item: T):
+        self.model += [item]
+        self._layout_update()
+
     def set_model(self, model: List[T]):
         self.model = model
         self._layout_update()

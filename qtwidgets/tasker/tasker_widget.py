@@ -9,10 +9,10 @@ from qtwidgets.tasker.worker_widget import WorkerWidget
 
 
 class TaskerWidget(FlowWidget):
-    def __init__(self, workers: List[Worker] = None):
+    def __init__(self, workers: List[Worker] = None, config: FlowConfig = None):
         self.pool = QThreadPool()
         super().__init__(
-            FlowConfig(
+            config or FlowConfig(
                 item=Item(width=250),
                 page=Page(size=10)
             ),
