@@ -1,1 +1,2 @@
 include resources/ui/*.ui
+include docs/*
