@@ -26,6 +26,31 @@ flow = FlowWidget(
 )
 ```
 
+# Galery Widget
+
+Based on Flow Widget with auto-resize behavior.
+
+![](docs/img/galery.jpg)
+
+```python
+def builder(path: str):
+    def reader() -> numpy.ndarray:
+        return cv2.imread(path)
+
+    return reader
+
+
+widget = GaleryWidget(
+    images=[
+        builder('image1.jpg'),
+        builder('image2.jpg')
+    ],
+    config=FlowConfig(
+        page=Page(size=20)
+    )
+)
+```
+
 # Install
 
 ```

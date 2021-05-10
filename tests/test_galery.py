@@ -26,10 +26,10 @@ if __name__ == '__main__':
     widget = GaleryWidget(
         images=[
             source_factory()
-            for i in range(1000)
+            for i in range(10_000)
         ],
         config=FlowConfig(
-            page=Page(size=1)
+            page=Page(size=20)
         )
     )
 
