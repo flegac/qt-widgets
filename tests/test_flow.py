@@ -24,7 +24,7 @@ if __name__ == '__main__':
     flow = FlowWidget(
         config=FlowConfig(
             item=Item(
-                # width=200,
+                width=200,
             ),
             page=Page(
                 index=4,

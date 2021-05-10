@@ -1,8 +1,6 @@
 import math
-import uuid
 from typing import List, Callable, Any, Generic, TypeVar
 
-from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QResizeEvent
 from PyQt5.QtWidgets import *
 from PyQt5.QtWidgets import QWidget
@@ -68,13 +66,29 @@ class FlowWidget(QWidget, Generic[T]):
         self._hidden.setLayout(QVBoxLayout())
 
         self._page_slider.valueChanged.connect(self.select_page)
-        self.nextStackButton.clicked.connect(self.next_stack)
+        # self.nextStackButton.clicked.connect(self.next_stack)
+
+        self._page_size_spinner.setValue(self.config.page.size)
+        self._page_size_spinner.valueChanged.connect(self.on_page_size_change)
         self.show()
 
     def _layout_update(self):
         self._build_page(self.config.page.index)
         self._slider_update()
         self._label_update()
+
+    def column_number(self, widgets: List[QWidget]):
+        item_width = self.config.item.width
+        if self.config.item.width is None:
+            item_width = max([w.minimumWidth() for w in widgets])
+            if item_width == 0:
+                columns = math.floor(math.sqrt(len(widgets)))
+                return columns
+
+        safety_padding = self._scroll_area.verticalScrollBar().width()
+        w = safety_padding + max(1, item_width)
+        columns = max(1, math.floor(self.width() / w))
+        return columns
 
     def _build_page(self, index: int):
         items = self.config.page.select(self.model, index)
@@ -83,15 +97,8 @@ class FlowWidget(QWidget, Generic[T]):
         if n == 0:
             return
 
-        widgets = [self._get_widget(item) for item in items]
-
-        item_width = max([w.minimumWidth() for w in widgets])
-        if self.config.item.width is not None:
-            item_width = self.config.item.width
-        if item_width == 0:
-            item_width = min([w.width() for w in widgets])
-        w = max(1, item_width)
-        columns = max(1, math.floor(self.width() / w))
+        widgets: List[QWidget] = [self._get_widget(item) for item in items]
+        columns = self.column_number(widgets)
 
         old_layout: QGridLayout = self._page.layout()
         hidden_layout = self._hidden.layout()
@@ -102,13 +109,16 @@ class FlowWidget(QWidget, Generic[T]):
         layout_iter(old_layout, hide_widget)
 
         layout = QGridLayout()
-        page = QWidget()
-        page.setLayout(layout)
+        layout.setSpacing(0)
+        layout.setContentsMargins(0, 0, 0, 0)
 
         for i in range(0, n, columns):
             for j, widget in enumerate(widgets[i:i + columns]):
                 hidden_layout.removeWidget(widget)
-                layout.addWidget(widget, i, j, Qt.AlignCenter)
+                layout.addWidget(widget, i, j)
+
+        page = QWidget()
+        page.setLayout(layout)
 
         stack: QStackedWidget = self.stackedWidget
         stack.removeWidget(stack.currentWidget())
@@ -116,11 +126,10 @@ class FlowWidget(QWidget, Generic[T]):
         stack.setCurrentWidget(page)
 
     def _get_widget(self, item: T):
-        if not hasattr(item, '_uid'):
-            item._uid = str(uuid.uuid4())
-        if item._uid not in self.widgets:
-            self.widgets[item._uid] = self.builder(item)
-        return self.widgets[item._uid]
+        key = hash(item)
+        if key not in self.widgets:
+            self.widgets[key] = self.builder(item)
+        return self.widgets[key]
 
     def _slider_update(self):
         index = self.config.page.index
@@ -164,6 +173,11 @@ class FlowWidget(QWidget, Generic[T]):
         return label
 
     @property
+    def _page_size_spinner(self):
+        size: QSpinBox = self.pageSize
+        return size
+
+    @property
     def _scroll_area(self):
         scroll: QScrollArea = self.scrollArea
         return scroll
@@ -171,4 +185,8 @@ class FlowWidget(QWidget, Generic[T]):
     # custom events --------------------------------------------------
 
     def resizeEvent(self, event: QResizeEvent):
+        self._layout_update()
+
+    def on_page_size_change(self, value: int):
+        self.config.page.size = value
         self._layout_update()

@@ -5,8 +5,8 @@ from logging import Logger
 
 from PyQt5.QtWidgets import QApplication
 
-from qtwidgets.tasker.tasker_widget import TaskerWidget
-from qtwidgets.tasker.worker import Task, Worker
+from qtwidgets.worker.worker_manager_widget import WorkerManagerWidget
+from qtwidgets.worker.worker import Task, Worker
 
 
 def create_worker():
@@ -28,14 +28,11 @@ def create_worker():
 
         return work
 
-    return Worker(*[task(i) for i in range(10)])
+    return Worker((task(i) for i in range(10)))
 
 
 if __name__ == '__main__':
     app = QApplication([])
-    tasker = TaskerWidget([
-        create_worker()
-        for i in range(1000)
-    ])
-
+    model = [create_worker() for i in range(1_000)]
+    tasker = WorkerManagerWidget(model)
     sys.exit(app.exec())

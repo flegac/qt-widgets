@@ -4,17 +4,17 @@ from PyQt5.QtCore import QThreadPool
 
 from qtwidgets.flow.flow_config import FlowConfig, Item, Page
 from qtwidgets.flow.flow_widget import FlowWidget
-from qtwidgets.tasker.worker import Worker
-from qtwidgets.tasker.worker_widget import WorkerWidget
+from qtwidgets.worker.worker import Worker
+from qtwidgets.worker.worker_widget import WorkerWidget
 
 
-class TaskerWidget(FlowWidget):
+class WorkerManagerWidget(FlowWidget):
     def __init__(self, workers: List[Worker] = None, config: FlowConfig = None):
         self.pool = QThreadPool()
         super().__init__(
             config or FlowConfig(
-                item=Item(width=250),
-                page=Page(size=10)
+                # item=Item(width=250),
+                page=Page(size=1)
             ),
             builder=self._worker_builder,
             model=workers

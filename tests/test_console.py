@@ -19,6 +19,7 @@ def start_logging_thread(name: str):
             log.warning(f'test')
             log.error(f'test')
             time.sleep(0.2)
+        log.error(f'-------- DONE -------------------------')
 
     thread = threading.Thread(target=run)
     thread.start()
@@ -36,5 +37,6 @@ if __name__ == '__main__':
 
     app = QApplication([])
     logs = ConsoleWidget(config)
+    logs.show()
 
     sys.exit(app.exec_())

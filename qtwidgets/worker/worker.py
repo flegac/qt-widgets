@@ -1,10 +1,10 @@
 import logging
 from dataclasses import dataclass
-from typing import Callable, Any, List
+from typing import Callable, Any, Iterable
 
 from PyQt5.QtCore import QObject, pyqtSignal, QRunnable
 
-from qtwidgets.tasker.worker_status import WorkerStatus
+from qtwidgets.worker.worker_status import WorkerStatus
 
 Task = Callable[[logging.Logger], Any]
 
@@ -27,7 +27,7 @@ class WorkerSignal(QObject):
 
 
 class Worker(QRunnable):
-    def __init__(self, *tasks: List[Task]):
+    def __init__(self, tasks: Iterable[Task]):
         super().__init__()
         self.signal = WorkerSignal()
         self.tasks = tasks
@@ -39,8 +39,11 @@ class Worker(QRunnable):
         try:
             self.canceled = False
             self.signal.status.emit(WorkerStatus.started)
-            total = len(self.tasks)
-            for i, task in enumerate(self.tasks):
+
+            tasks = list(self.tasks)
+
+            total = len(tasks)
+            for i, task in enumerate(tasks):
                 try:
                     if self.canceled:
                         break
