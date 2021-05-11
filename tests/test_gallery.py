@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QApplication
 
 from qtwidgets.browser.browser_config import BrowserConfig, Page
 from qtwidgets.gallery.gallery_widget import GalleryWidget
+from qtwidgets.observablelist import observablelist
 
 
 def source_factory():
@@ -22,15 +23,17 @@ def source_factory():
 
 
 if __name__ == '__main__':
+    model = observablelist([
+        source_factory()
+        for i in range(10_000)
+    ])
+
     app = QApplication([])
     widget = GalleryWidget(
-        images=[
-            source_factory()
-            for i in range(10_000)
-        ],
         config=BrowserConfig(
             page=Page(size=20)
-        )
+        ),
+        model=model
     )
 
     sys.exit(app.exec())

@@ -5,8 +5,9 @@ from logging import Logger
 
 from PyQt5.QtWidgets import QApplication
 
-from qtwidgets.worker.worker_manager_widget import WorkerManagerWidget
+from qtwidgets.observablelist import observablelist
 from qtwidgets.worker.worker import Task, Worker
+from qtwidgets.worker.worker_manager_widget import WorkerManagerWidget
 
 
 def create_worker():
@@ -33,6 +34,6 @@ def create_worker():
 
 if __name__ == '__main__':
     app = QApplication([])
-    model = [create_worker() for i in range(1_000)]
+    model = observablelist([create_worker() for i in range(1_000)])
     tasker = WorkerManagerWidget(model)
     sys.exit(app.exec())

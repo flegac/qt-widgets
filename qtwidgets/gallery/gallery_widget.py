@@ -10,13 +10,13 @@ RasterSource = Callable[[], np.ndarray]
 
 
 class GalleryWidget(BrowserWidget):
-    def __init__(self, images: List[RasterSource] = None, config: BrowserConfig = None):
+    def __init__(self, config: BrowserConfig = None, model: List[RasterSource] = None):
         super().__init__(
             config=config or BrowserConfig(
                 page=Page(size=50)
             ),
             builder=self.builder,
-            model=images
+            model=model
         )
 
     def builder(self, source: RasterSource):

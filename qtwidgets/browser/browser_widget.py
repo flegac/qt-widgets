@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtWidgets import QWidget
 
 from qtwidgets.browser.browser_config import BrowserConfig
+from qtwidgets.observablelist import observablelist
 from qtwidgets.utils import load_ui, layout_transfert, layout_iter
 
 WidgetBuilder = Callable[[Any], QWidget]
@@ -19,13 +20,13 @@ class BrowserWidget(QWidget, Generic[T]):
         TODO: use Generic[T] & typehint widget/data
     """
 
-    def __init__(self, config: BrowserConfig, builder: WidgetBuilder, model: List[T] = None) -> None:
+    def __init__(self, config: BrowserConfig, builder: WidgetBuilder, model: observablelist = None) -> None:
         super().__init__()
         self.config = config
         self.builder = builder
-        self.model: List[T] = model or []
-
         self.widgets = dict()
+        self.model = model or observablelist()
+        self.model.add_after_change_obervers(self._on_change)
         self._setup_ui()
 
     def is_empty(self):
@@ -91,9 +92,6 @@ class BrowserWidget(QWidget, Generic[T]):
         items = self.config.page.select(self.model, index)
         n = len(items)
 
-        if n == 0:
-            return
-
         widgets: List[QWidget] = [self._get_widget(item) for item in items]
         columns = self.column_number(widgets)
 
@@ -109,7 +107,7 @@ class BrowserWidget(QWidget, Generic[T]):
         layout.setSpacing(0)
         layout.setContentsMargins(0, 0, 0, 0)
 
-        widget_width = math.floor(self.width()  / columns)
+        widget_width = math.floor(self.width() / columns)
 
         for i in range(0, n, columns):
             for j, widget in enumerate(widgets[i:i + columns]):
@@ -189,4 +187,7 @@ class BrowserWidget(QWidget, Generic[T]):
 
     def on_page_size_change(self, value: int):
         self.config.page.size = value
+        self._layout_update()
+
+    def _on_change(self, event):
         self._layout_update()
