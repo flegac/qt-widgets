@@ -76,6 +76,8 @@ class BrowserWidget(QWidget, Generic[T]):
         self._label_update()
 
     def column_number(self, widgets: List[QWidget]):
+        if len(widgets) == 0:
+            return 1
         item_width = self.config.item.width
         if self.config.item.width is None:
             item_width = max([w.minimumWidth() for w in widgets])

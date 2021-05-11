@@ -5,7 +5,7 @@ Observer = Callable[[Any], None]
 
 class observablelist(list):
     def __init__(self, items: Iterable = None):
-        super().__init__(items)
+        super().__init__(items or [])
         self.before_observers: List[Observer] = []
         self.after_observers: List[Observer] = []
 
