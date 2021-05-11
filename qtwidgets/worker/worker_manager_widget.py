@@ -2,17 +2,17 @@ from typing import List
 
 from PyQt5.QtCore import QThreadPool
 
-from qtwidgets.flow.flow_config import FlowConfig, Item, Page
-from qtwidgets.flow.flow_widget import FlowWidget
+from qtwidgets.browser.browser_config import BrowserConfig, Item, Page
+from qtwidgets.browser.browser_widget import BrowserWidget
 from qtwidgets.worker.worker import Worker
 from qtwidgets.worker.worker_widget import WorkerWidget
 
 
-class WorkerManagerWidget(FlowWidget):
-    def __init__(self, workers: List[Worker] = None, config: FlowConfig = None):
+class WorkerManagerWidget(BrowserWidget):
+    def __init__(self, workers: List[Worker] = None, config: BrowserConfig = None):
         self.pool = QThreadPool()
         super().__init__(
-            config or FlowConfig(
+            config or BrowserConfig(
                 # item=Item(width=250),
                 page=Page(size=1)
             ),

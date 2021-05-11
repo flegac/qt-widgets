@@ -2,17 +2,17 @@
 
 Reusable Qt widgets library.
 
-## Flow Widget
+## Browser Widget
 
 Automatic layout for similar objects.
 
-![](docs/img/flow.jpg)
+![](docs/img/browser.jpg)
 
 ```python
 model: List[str] = [f'data {_}' for _ in range(10_000)]
 
-flow = FlowWidget(
-    config=FlowConfig(
+browser = BrowserWidget(
+    config=BrowserConfig(
         item=Item(
             # width=200,
         ),
@@ -26,11 +26,11 @@ flow = FlowWidget(
 )
 ```
 
-# Galery Widget
+# Gallery Widget
 
-Based on Flow Widget with auto-resize behavior.
+Based on Browser Widget with auto-resize behavior.
 
-![](docs/img/galery.jpg)
+![](docs/img/gallery.jpg)
 
 ```python
 def builder(path: str):
@@ -40,12 +40,12 @@ def builder(path: str):
     return reader
 
 
-widget = GaleryWidget(
+widget = GalleryWidget(
     images=[
         builder('image1.jpg'),
         builder('image2.jpg')
     ],
-    config=FlowConfig(
+    config=BrowserConfig(
         page=Page(size=20)
     )
 )

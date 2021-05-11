@@ -4,14 +4,14 @@ import sys
 import numpy as np
 from PyQt5.QtWidgets import QApplication
 
-from qtwidgets.flow.flow_config import FlowConfig, Page
-from qtwidgets.galery.galery_widget import GaleryWidget, Buffer
+from qtwidgets.browser.browser_config import BrowserConfig, Page
+from qtwidgets.gallery.gallery_widget import GalleryWidget
 
 
 def source_factory():
-    def source() -> Buffer:
+    def source():
         width = 64
-        aspect = .5 + random.random() * 1.5
+        aspect = .75 + random.random() * .5
         height = int(aspect * width)
         buffer = np.random.rand(height, width, 3)
         buffer *= 255
@@ -23,12 +23,12 @@ def source_factory():
 
 if __name__ == '__main__':
     app = QApplication([])
-    widget = GaleryWidget(
+    widget = GalleryWidget(
         images=[
             source_factory()
             for i in range(10_000)
         ],
-        config=FlowConfig(
+        config=BrowserConfig(
             page=Page(size=20)
         )
     )

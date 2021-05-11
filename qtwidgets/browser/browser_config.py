@@ -27,6 +27,6 @@ class Page:
 
 
 @dataclass
-class FlowConfig:
+class BrowserConfig:
     item: Item = Item()
     page: Page = Page()

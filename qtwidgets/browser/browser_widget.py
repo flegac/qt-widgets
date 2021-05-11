@@ -5,7 +5,7 @@ from PyQt5.QtGui import QResizeEvent
 from PyQt5.QtWidgets import *
 from PyQt5.QtWidgets import QWidget
 
-from qtwidgets.flow.flow_config import FlowConfig
+from qtwidgets.browser.browser_config import BrowserConfig
 from qtwidgets.utils import load_ui, layout_transfert, layout_iter
 
 WidgetBuilder = Callable[[Any], QWidget]
@@ -13,14 +13,13 @@ WidgetBuilder = Callable[[Any], QWidget]
 T = TypeVar('T')
 
 
-class FlowWidget(QWidget, Generic[T]):
+class BrowserWidget(QWidget, Generic[T]):
     """
         TODO: configurable layout strategy (vertical vs horizontal first)
         TODO: use Generic[T] & typehint widget/data
-        TODO: do not rebuild widgets (use cache)
     """
 
-    def __init__(self, config: FlowConfig, builder: WidgetBuilder, model: List[T] = None) -> None:
+    def __init__(self, config: BrowserConfig, builder: WidgetBuilder, model: List[T] = None) -> None:
         super().__init__()
         self.config = config
         self.builder = builder
@@ -57,7 +56,7 @@ class FlowWidget(QWidget, Generic[T]):
     # building ui ----------------------------------------------------
 
     def _setup_ui(self):
-        load_ui('flow', self)
+        load_ui('browser', self)
 
         layout = QGridLayout()
         layout.setSpacing(0)
@@ -66,8 +65,6 @@ class FlowWidget(QWidget, Generic[T]):
         self._hidden.setLayout(QVBoxLayout())
 
         self._page_slider.valueChanged.connect(self.select_page)
-        # self.nextStackButton.clicked.connect(self.next_stack)
-
         self._page_size_spinner.setValue(self.config.page.size)
         self._page_size_spinner.valueChanged.connect(self.on_page_size_change)
         self.show()
@@ -112,10 +109,13 @@ class FlowWidget(QWidget, Generic[T]):
         layout.setSpacing(0)
         layout.setContentsMargins(0, 0, 0, 0)
 
+        widget_width = math.floor(self.width()  / columns)
+
         for i in range(0, n, columns):
             for j, widget in enumerate(widgets[i:i + columns]):
                 hidden_layout.removeWidget(widget)
                 layout.addWidget(widget, i, j)
+                widget.setMaximumWidth(widget_width)
 
         page = QWidget()
         page.setLayout(layout)

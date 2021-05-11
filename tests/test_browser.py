@@ -4,8 +4,8 @@ from typing import List
 
 from PyQt5.QtWidgets import QApplication, QPushButton
 
-from qtwidgets.flow.flow_config import FlowConfig, Item, Page
-from qtwidgets.flow.flow_widget import FlowWidget
+from qtwidgets.browser.browser_config import BrowserConfig, Item, Page
+from qtwidgets.browser.browser_widget import BrowserWidget
 
 
 def widget_builder(item: str):
@@ -19,10 +19,10 @@ if __name__ == '__main__':
     # abstract model
     model: List[str] = [f'data {_}' for _ in range(10_000)]
 
-    # use Flow widget
+    # use Browser widget
     app = QApplication([])
-    flow = FlowWidget(
-        config=FlowConfig(
+    browser = BrowserWidget(
+        config=BrowserConfig(
             item=Item(
                 width=200,
             ),
