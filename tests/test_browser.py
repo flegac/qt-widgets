@@ -1,11 +1,11 @@
 import random
-import sys
 
+import sys
 from PyQt5.QtWidgets import QApplication, QPushButton
 
 from qtwidgets.browser.browser_config import BrowserConfig, Item, Page
-from qtwidgets.observablelist import observablelist
 from qtwidgets.browser.browser_widget import BrowserWidget
+from qtwidgets.observablelist import observablelist
 
 if __name__ == '__main__':
     # abstract model
@@ -23,6 +23,7 @@ if __name__ == '__main__':
     # use Browser widget
     app = QApplication([])
     browser = BrowserWidget(
+        builder=widget_builder,
         config=BrowserConfig(
             item=Item(
                 width=200,
@@ -32,7 +33,6 @@ if __name__ == '__main__':
                 size=25
             ),
         ),
-        builder=widget_builder,
-        model=model,
+        model=model
     )
     sys.exit(app.exec_())

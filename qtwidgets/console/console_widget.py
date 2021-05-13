@@ -15,8 +15,9 @@ class LogSignal(QObject):
 
 
 class ConsoleWidget(QWidget):
-    def __init__(self, config: ConsoleConfig):
+    def __init__(self, config: ConsoleConfig=None):
         super().__init__()
+        config = config or ConsoleConfig('console')
         self.config = deepcopy(config)
         self.signals = LogSignal()
         self.signals.log.connect(self._write_line)

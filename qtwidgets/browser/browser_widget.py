@@ -20,9 +20,9 @@ class BrowserWidget(QWidget, Generic[T]):
         TODO: use Generic[T] & typehint widget/data
     """
 
-    def __init__(self, config: BrowserConfig, builder: WidgetBuilder, model: observablelist = None) -> None:
+    def __init__(self, builder: WidgetBuilder, config: BrowserConfig = None, model: observablelist = None) -> None:
         super().__init__()
-        self.config = config
+        self.config = config or BrowserConfig()
         self.builder = builder
         self.widgets = dict()
         self.model = model or observablelist()
@@ -36,11 +36,17 @@ class BrowserWidget(QWidget, Generic[T]):
         self.model += [item]
         self._layout_update()
 
+    def set_config(self, config: BrowserConfig):
+        self.config = config
+        self._layout_update()
+
     def set_model(self, model: List[T]):
         self.model = model
         self._layout_update()
 
     def page_number(self):
+        if not self.model:
+            return 0
         return math.ceil(len(self.model) / self.config.page.size)
 
     def select_page(self, index: int):

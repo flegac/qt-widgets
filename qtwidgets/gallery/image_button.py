@@ -24,7 +24,6 @@ class ImageButton(QPushButton):
         self.buffer = buffer
         self.pixmap = pixmap_from_numpy(self.buffer)
         self.resize_pixmap(w, h)
-        self.clicked.connect(print)
 
     def resize_pixmap(self, w: int, h: int):
         icon = QIcon(self.pixmap.scaled(w, h, Qt.KeepAspectRatio))

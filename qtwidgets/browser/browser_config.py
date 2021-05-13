@@ -12,7 +12,7 @@ class Item:
 @dataclass
 class Page:
     index: int = 0
-    size: int = 100
+    size: int = 20
 
     def range(self, index: int = None) -> Tuple[int, int]:
         if index is None:
@@ -22,8 +22,11 @@ class Page:
         return start, end
 
     def select(self, model: List[T], index: int):
-        first, last = self.range(index)
-        return model[first:last]
+        try:
+            first, last = self.range(index)
+            return model[first:last]
+        except:
+            return []
 
 
 @dataclass
