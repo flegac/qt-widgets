@@ -1,6 +1,6 @@
-import math
 from typing import List, Callable, Any, Generic, TypeVar
 
+import math
 from PyQt5.QtGui import QResizeEvent
 from PyQt5.QtWidgets import *
 from PyQt5.QtWidgets import QWidget
@@ -82,18 +82,22 @@ class BrowserWidget(QWidget, Generic[T]):
         self._label_update()
 
     def column_number(self, widgets: List[QWidget]):
-        if len(widgets) == 0:
+        N = len(widgets)
+        if N == 0:
             return 1
+
+        width = self.width()
+
         item_width = self.config.item.width
-        if self.config.item.width is None:
+        if item_width is None:
             item_width = max([w.minimumWidth() for w in widgets])
             if item_width == 0:
-                columns = math.floor(math.sqrt(len(widgets)))
+                columns = math.floor(math.sqrt(N))
                 return columns
 
         safety_padding = self._scroll_area.verticalScrollBar().width()
         w = safety_padding + max(1, item_width)
-        columns = max(1, math.floor(self.width() / w))
+        columns = max(1, math.floor(width / w))
         return columns
 
     def _build_page(self, index: int):
