@@ -14,8 +14,8 @@ if __name__ == '__main__':
 
     def widget_builder(item: str):
         widget = QPushButton(item)
-        widget.setFixedWidth(random.randint(60, 150))
-        widget.setFixedHeight(random.randint(20, 50))
+        # widget.setFixedWidth(random.randint(60, 150))
+        # widget.setFixedHeight(random.randint(20, 50))
         widget.clicked.connect(lambda ev: model.remove(item))
         return widget
 
@@ -26,7 +26,7 @@ if __name__ == '__main__':
         builder=widget_builder,
         config=BrowserConfig(
             item=Item(
-                width=200,
+                width=175,
             ),
             page=Page(
                 index=4,

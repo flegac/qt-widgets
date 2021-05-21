@@ -27,15 +27,16 @@ class ConsoleWidget(QWidget):
         self.signals.log.connect(self._write_line)
         self._setup_ui()
         self.handler = QtHandler(self.signals)
-        self.set_loggers(config.loggers)
+        if config and config.loggers:
+            self.set_loggers(config.loggers)
+        else:
+            self.set_loggers([logging.getLogger()])
 
         combo: QComboBox = self.consoleLevel
         combo.currentIndexChanged.connect(self.change_level)
 
         self.consoleClearButton.clicked.connect(self.clear)
-
         self.consoleInput.returnPressed.connect(self.handle_input)
-
         self.context = dict()
 
     def handle_input(self):

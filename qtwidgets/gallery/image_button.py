@@ -30,8 +30,4 @@ class ImageButton(QToolButton):
 
     def resizeEvent(self, ev: QResizeEvent) -> None:
         super().resizeEvent(ev)
-        size = self.size()
-        patch = 1
-        dw = 6 + patch
-        width_dw = size.width() - dw
-        self.resize_pixmap(width_dw)
+        self.resize_pixmap(self.width() - 7)

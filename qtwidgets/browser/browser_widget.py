@@ -72,6 +72,13 @@ class BrowserWidget(QWidget, Generic[T]):
         self._page_slider.valueChanged.connect(self.select_page)
         self._page_size_spinner.setValue(self.config.page.size)
         self._page_size_spinner.valueChanged.connect(self.on_page_size_change)
+
+        self.widgetSize.valueChanged.connect(self.on_widget_size_change)
+        if self.config.item.width is not None:
+            self.widgetSize.setValue(self.config.item.width)
+
+        self.clearButton.clicked.connect(lambda: self.model.clear())
+
         self.show()
 
     def _layout_update(self):
@@ -156,7 +163,7 @@ class BrowserWidget(QWidget, Generic[T]):
 
         visible = self.stackedWidget.currentWidget().layout().count()
         hidden = len(self.widgets) - self.stackedWidget.currentWidget().layout().count()
-        label = f'page {index + 1}/{page_number} ({visible} visible widgets {hidden} hidden widgets)'
+        label = f'{index + 1}/{page_number}'
         self._page_label.setText(label)
 
     # widget access ------------------------------------------------
@@ -193,6 +200,11 @@ class BrowserWidget(QWidget, Generic[T]):
     # custom events --------------------------------------------------
 
     def resizeEvent(self, event: QResizeEvent):
+        super().resizeEvent(event)
+        self._layout_update()
+
+    def on_widget_size_change(self, value: int):
+        self.config.item.width = value
         self._layout_update()
 
     def on_page_size_change(self, value: int):
