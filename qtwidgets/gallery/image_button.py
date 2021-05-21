@@ -1,31 +1,28 @@
 import numpy as np
 from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QIcon, QResizeEvent, QPixmap, QImage
-from PyQt5.QtWidgets import QPushButton, QSizePolicy
+from PyQt5.QtGui import QIcon, QResizeEvent, QPixmap
+from PyQt5.QtWidgets import QSizePolicy, QToolButton
+from qimage2ndarray import array2qimage
 
 
-def pixmap_from_numpy(buffer: np.ndarray) -> QPixmap:
-    buffer = buffer
-    h, w = buffer.shape[:2]
-    img = QImage(buffer.tobytes(), w, h, QImage.Format_RGB888)
-    return QPixmap.fromImage(img)
-
-
-class ImageButton(QPushButton):
-    def __init__(self, buffer: np.ndarray):
+class ImageButton(QToolButton):
+    def __init__(self, buffer: np.ndarray, name: str = None):
         super().__init__()
-        # self.setFlat(True)
         # self.setAutoFillBackground(True)
+        self.setStyleSheet(f'QToolButton {{ margin: 0px; }}')
+        self.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        self.setText(name)
 
-        self.setStyleSheet(f'QPushButton {{ color: rgb{0, 0, 0}; margin: 0px }}')
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         h, w = buffer.shape[:2]
+        self.aspect = w / h
         self.buffer = buffer
-        self.pixmap = pixmap_from_numpy(self.buffer)
-        self.resize_pixmap(w, h)
+        self.pixmap = QPixmap.fromImage(array2qimage(self.buffer))
+        self.resize_pixmap(h)
 
-    def resize_pixmap(self, w: int, h: int):
+    def resize_pixmap(self, w: int):
+        h = int(w / self.aspect)
         icon = QIcon(self.pixmap.scaled(w, h, Qt.KeepAspectRatio))
         self.setIcon(icon)
         size = QSize(w, h)
@@ -36,5 +33,5 @@ class ImageButton(QPushButton):
         size = self.size()
         patch = 1
         dw = 6 + patch
-        dh = 4 + patch
-        self.resize_pixmap(size.width() - dw, size.height() - dh)
+        width_dw = size.width() - dw
+        self.resize_pixmap(width_dw)

@@ -15,5 +15,5 @@ class GalleryWidget(BrowserWidget):
 
     def builder(self, source: RasterSource):
         buffer = source()
-        button = ImageButton(buffer)
+        button = ImageButton(buffer, name='test_label')
         return button

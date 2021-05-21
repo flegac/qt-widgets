@@ -1,6 +1,6 @@
+import math
 from typing import List, Callable, Any, Generic, TypeVar
 
-import math
 from PyQt5.QtGui import QResizeEvent
 from PyQt5.QtWidgets import *
 from PyQt5.QtWidgets import QWidget
@@ -32,16 +32,14 @@ class BrowserWidget(QWidget, Generic[T]):
     def is_empty(self):
         return len(self.model) == 0
 
-    def add_item(self, item: T):
-        self.model += [item]
-        self._layout_update()
-
     def set_config(self, config: BrowserConfig):
         self.config = config
         self._layout_update()
 
     def set_model(self, model: List[T]):
+        assert isinstance(model, observablelist)
         self.model = model
+        self.model.add_after_change_obervers(self._on_change)
         self._layout_update()
 
     def page_number(self):
