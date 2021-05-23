@@ -11,6 +11,8 @@ from qtwidgets.utils import load_ui, layout_transfert, layout_iter
 
 WidgetBuilder = Callable[[Any], QWidget]
 
+identity: WidgetBuilder = lambda x: x
+
 T = TypeVar('T')
 
 
@@ -20,8 +22,13 @@ class BrowserWidget(QWidget, Generic[T]):
         TODO: use Generic[T] & typehint widget/data
     """
 
-    def __init__(self, builder: WidgetBuilder, config: BrowserConfig = None, model: observablelist = None) -> None:
-        super().__init__()
+    def __init__(self,
+                 parent: QWidget = None,
+                 builder: WidgetBuilder = identity,
+                 config: BrowserConfig = None,
+                 model: observablelist = None
+                 ):
+        super().__init__(parent)
         self.config = config or BrowserConfig()
         self.builder = builder
         self.widgets = dict()
