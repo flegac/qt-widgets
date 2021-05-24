@@ -1,24 +1,20 @@
 from dataclasses import dataclass
-from typing import Tuple, List, TypeVar, Optional
+from typing import Tuple, List, TypeVar
 
 T = TypeVar('T')
 
 
 @dataclass
-class Item:
-    width: Optional[int] = None
-
-
-@dataclass
-class Page:
+class BrowserConfig:
     index: int = 0
-    size: int = 20
+    item_per_line: int = 1
+    item_per_page: int = 1
 
     def range(self, index: int = None) -> Tuple[int, int]:
         if index is None:
             index = self.index
-        start = index * self.size
-        end = start + self.size
+        start = index * self.item_per_page
+        end = start + self.item_per_page
         return start, end
 
     def select(self, model: List[T], index: int):
@@ -27,9 +23,3 @@ class Page:
             return model[first:last]
         except:
             return []
-
-
-@dataclass
-class BrowserConfig:
-    item: Item = Item()
-    page: Page = Page()

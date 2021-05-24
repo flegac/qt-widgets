@@ -25,14 +25,13 @@ class BrowserWidget(QWidget, Generic[T]):
     def __init__(self,
                  parent: QWidget = None,
                  builder: WidgetBuilder = identity,
-                 config: BrowserConfig = None,
-                 model: observablelist = None
+                 config: BrowserConfig = None
                  ):
         super().__init__(parent)
         self.config = config or BrowserConfig()
         self.builder = builder
         self.widgets = dict()
-        self.model = model or observablelist()
+        self.model = observablelist()
         self.model.add_after_change_obervers(self._on_change)
         self._setup_ui()
 
@@ -52,18 +51,13 @@ class BrowserWidget(QWidget, Generic[T]):
     def page_number(self):
         if not self.model:
             return 0
-        return math.ceil(len(self.model) / self.config.page.size)
+        return math.ceil(len(self.model) / self.config.item_per_page)
 
     def select_page(self, index: int):
-        if self.config.page.index == index:
+        if self.config.index == index:
             return
-        self.config.page.index = index
+        self.config.index = index
         self._layout_update()
-
-    def next_stack(self):
-        stack: QStackedWidget = self.stackedWidget
-        index = (stack.currentIndex() + 1) % stack.count()
-        stack.setCurrentIndex(index)
 
     # building ui ----------------------------------------------------
 
@@ -76,20 +70,20 @@ class BrowserWidget(QWidget, Generic[T]):
         self._page.setLayout(layout)
         self._hidden.setLayout(QVBoxLayout())
 
-        self._page_slider.valueChanged.connect(self.select_page)
-        self._page_size_spinner.setValue(self.config.page.size)
-        self._page_size_spinner.valueChanged.connect(self.on_page_size_change)
+        self.page_selector.valueChanged.connect(self.select_page)
 
-        self.widgetSize.valueChanged.connect(self.on_widget_size_change)
-        if self.config.item.width is not None:
-            self.widgetSize.setValue(self.config.item.width)
+        self.item_per_page.valueChanged.connect(self.on_item_per_page_change)
+        self.item_per_page.setValue(self.config.item_per_page)
+
+        self.item_per_line.valueChanged.connect(self.on_item_per_line_change)
+        self.item_per_line.setValue(self.config.item_per_line)
 
         self.clearButton.clicked.connect(lambda: self.model.clear())
 
         self.show()
 
     def _layout_update(self):
-        self._build_page(self.config.page.index)
+        self._build_page(self.config.index)
         self._slider_update()
         self._label_update()
 
@@ -107,17 +101,18 @@ class BrowserWidget(QWidget, Generic[T]):
                 columns = math.floor(math.sqrt(N))
                 return columns
 
-        safety_padding = self._scroll_area.verticalScrollBar().width()
+        safety_padding = self.scroll_area.verticalScrollBar().width()
         w = safety_padding + max(1, item_width)
         columns = max(1, math.floor(width / w))
         return columns
 
     def _build_page(self, index: int):
-        items = self.config.page.select(self.model, index)
+        items = self.config.select(self.model, index)
         n = len(items)
 
         widgets: List[QWidget] = [self._get_widget(item) for item in items]
-        columns = self.column_number(widgets)
+        columns = self.config.item_per_line
+        # columns = self.column_number(widgets)
 
         old_layout: QGridLayout = self._page.layout()
         hidden_layout = self._hidden.layout()
@@ -154,24 +149,21 @@ class BrowserWidget(QWidget, Generic[T]):
         return self.widgets[key]
 
     def _slider_update(self):
-        index = self.config.page.index
+        index = self.config.index
         page_number = self.page_number()
 
-        self._page_slider.setValue(index)
-        self._page_slider.setRange(0, page_number - 1)
+        self.page_selector.setValue(index)
+        self.page_selector.setRange(0, page_number - 1)
         if page_number <= 1:
-            self._page_slider.hide()
+            self.page_selector.hide()
         else:
-            self._page_slider.show()
+            self.page_selector.show()
 
     def _label_update(self):
-        index = self.config.page.index
+        index = self.config.index
         page_number = self.page_number()
-
-        visible = self.stackedWidget.currentWidget().layout().count()
-        hidden = len(self.widgets) - self.stackedWidget.currentWidget().layout().count()
         label = f'{index + 1}/{page_number}'
-        self._page_label.setText(label)
+        self.pageIndex.setText(label)
 
     # widget access ------------------------------------------------
     @property
@@ -185,37 +177,36 @@ class BrowserWidget(QWidget, Generic[T]):
         return page
 
     @property
-    def _page_slider(self):
-        slider: QSlider = self.pageSlider
-        return slider
+    def page_selector(self):
+        widget: QSlider = self.pageSelector
+        return widget
 
     @property
-    def _page_label(self):
-        label: QLabel = self.pageLabel
-        return label
+    def item_per_line(self):
+        widget: QSpinBox = self.itemPerLine
+        return widget
 
     @property
-    def _page_size_spinner(self):
-        size: QSpinBox = self.pageSize
-        return size
+    def item_per_page(self):
+        widget: QSpinBox = self.itemPerPage
+        return widget
 
     @property
-    def _scroll_area(self):
+    def scroll_area(self):
         scroll: QScrollArea = self.scrollArea
         return scroll
 
     # custom events --------------------------------------------------
-
     def resizeEvent(self, event: QResizeEvent):
         super().resizeEvent(event)
         self._layout_update()
 
-    def on_widget_size_change(self, value: int):
-        self.config.item.width = value
+    def on_item_per_line_change(self, value: int):
+        self.config.item_per_line = value
         self._layout_update()
 
-    def on_page_size_change(self, value: int):
-        self.config.page.size = value
+    def on_item_per_page_change(self, value: int):
+        self.config.item_per_page = value
         self._layout_update()
 
     def _on_change(self, event):

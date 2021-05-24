@@ -12,9 +12,10 @@ class WorkerManagerWidget(BrowserWidget):
         self.pool = QThreadPool()
         super().__init__(
             builder=self._worker_builder,
-            config=config,
-            model=model
+            config=config
         )
+        if model is not None:
+            self.set_model(model)
 
     def _worker_builder(self, worker: Worker):
         widget = WorkerWidget(self.pool, worker)

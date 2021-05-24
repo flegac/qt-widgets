@@ -1,9 +1,8 @@
-import random
-
 import sys
+
 from PyQt5.QtWidgets import QApplication, QPushButton
 
-from qtwidgets.browser.browser_config import BrowserConfig, Item, Page
+from qtwidgets.browser.browser_config import BrowserConfig
 from qtwidgets.browser.browser_widget import BrowserWidget
 from qtwidgets.observablelist import observablelist
 
@@ -25,14 +24,10 @@ if __name__ == '__main__':
     browser = BrowserWidget(
         builder=widget_builder,
         config=BrowserConfig(
-            item=Item(
-                width=175,
-            ),
-            page=Page(
-                index=4,
-                size=25
-            ),
-        ),
-        model=model
+            index=4,
+            item_per_line=3,
+            item_per_page=25,
+        )
     )
+    browser.set_model(model)
     sys.exit(app.exec_())

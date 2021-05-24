@@ -1,4 +1,4 @@
-from typing import List, Callable
+from typing import Callable
 
 import numpy as np
 
@@ -10,8 +10,8 @@ RasterSource = Callable[[], np.ndarray]
 
 
 class GalleryWidget(BrowserWidget):
-    def __init__(self, config: BrowserConfig = None, model: List[RasterSource] = None):
-        super().__init__(builder=self.builder, config=config, model=model)
+    def __init__(self, config: BrowserConfig = None):
+        super().__init__(builder=self.builder, config=config)
 
     def builder(self, source: RasterSource):
         buffer = source()
