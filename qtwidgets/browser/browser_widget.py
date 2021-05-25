@@ -35,18 +35,27 @@ class BrowserWidget(QWidget, Generic[T]):
         self.model.add_after_change_obervers(self._on_change)
         self._setup_ui()
 
+    def request_update(self):
+        self._build_page(self.config.index)
+        self._config_update()
+        self._label_update()
+        if self.config.tool_bar:
+            self.toolBar.show()
+        else:
+            self.toolBar.hide()
+
     def is_empty(self):
         return len(self.model) == 0
 
     def set_config(self, config: BrowserConfig):
         self.config = config
-        self._layout_update()
+        self.request_update()
 
     def set_model(self, model: List[T]):
         assert isinstance(model, observablelist)
         self.model = model
         self.model.add_after_change_obervers(self._on_change)
-        self._layout_update()
+        self.request_update()
 
     def page_number(self):
         if not self.model:
@@ -57,7 +66,7 @@ class BrowserWidget(QWidget, Generic[T]):
         if self.config.index == index:
             return
         self.config.index = index
-        self._layout_update()
+        self.request_update()
 
     # building ui ----------------------------------------------------
 
@@ -81,11 +90,6 @@ class BrowserWidget(QWidget, Generic[T]):
         self.clearButton.clicked.connect(lambda: self.model.clear())
 
         self.show()
-
-    def _layout_update(self):
-        self._build_page(self.config.index)
-        self._slider_update()
-        self._label_update()
 
     def column_number(self, widgets: List[QWidget]):
         N = len(widgets)
@@ -148,11 +152,11 @@ class BrowserWidget(QWidget, Generic[T]):
             self.widgets[key] = self.builder(item)
         return self.widgets[key]
 
-    def _slider_update(self):
-        index = self.config.index
+    def _config_update(self):
+        self.item_per_line.setValue(self.config.item_per_line)
+        self.item_per_page.setValue(self.config.item_per_page)
+        self.page_selector.setValue(self.config.index)
         page_number = self.page_number()
-
-        self.page_selector.setValue(index)
         self.page_selector.setRange(0, page_number - 1)
         if page_number <= 1:
             self.page_selector.hide()
@@ -199,15 +203,15 @@ class BrowserWidget(QWidget, Generic[T]):
     # custom events --------------------------------------------------
     def resizeEvent(self, event: QResizeEvent):
         super().resizeEvent(event)
-        self._layout_update()
+        self.request_update()
 
     def on_item_per_line_change(self, value: int):
         self.config.item_per_line = value
-        self._layout_update()
+        self.request_update()
 
     def on_item_per_page_change(self, value: int):
         self.config.item_per_page = value
-        self._layout_update()
+        self.request_update()
 
     def _on_change(self, event):
-        self._layout_update()
+        self.request_update()
