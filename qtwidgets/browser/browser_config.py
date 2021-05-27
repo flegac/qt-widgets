@@ -1,3 +1,4 @@
+import math
 from dataclasses import dataclass
 from typing import Tuple, List, TypeVar
 
@@ -25,3 +26,8 @@ class BrowserConfig:
             return model[first:last]
         except:
             return []
+
+    def page_number(self, items: List):
+        if not items:
+            return 0
+        return math.ceil(len(items) / self.item_per_page)
